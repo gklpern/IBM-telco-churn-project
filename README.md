@@ -1,30 +1,29 @@
 # IBM-telco-churn-project
 This project is about predicting customer churn in the telecommunications industry using machine learning techniques
 
+##Requirements
+numpy
+pandas
+matplotlib
+seaborn
+scikit-learn
+joblib
+torch
 
-Install required packages:
+
+You need to Install required packages:
 pip install -r requirements.txt
 
 
 
-Customer churn refers to when a customer stops using a service or switches to a competitor. Since retaining existing customers is typically easier and more cost-effective than acquiring new ones, understanding and predicting churn is critical for companies aiming to improve customer retention.
-
-In this project, we aim to develop a machine learning model that predicts whether a customer will churn based on a variety of features such as:
+In this project, we aim to develop a machine learning model that predicts whether a customer will churn based on a such features:
 
     Service usage patterns
-
     Customer demographics
-
     Billing and payment information
-
-A well-performing predictive model can help businesses:
-
     Identify high-risk customers early
-
     Take proactive actions (e.g., targeted offers)
-
     Reduce churn rates
-
     Increase customer satisfaction and overall profitability
 
 ## Dataset Description
@@ -32,57 +31,38 @@ A well-performing predictive model can help businesses:
 We used the IBM Telco Customer Churn dataset, which includes detailed information on over 7,000 customers and consists of 35 columns. The dataset includes:
 
     Customer Identity and Location: Customer ID, Country, State, City, Zip Code
-
     Geographical Information: Latitude, Longitude, Lat Long
-
     Demographics: Gender, Senior Citizen status, Partner, Dependents
-
     Service Details: Tenure (in months), Phone Service, Internet Service, Online Security, Online Backup, etc.
-
     Contract and Billing: Contract type, Paperless Billing, Payment Method, Monthly and Total Charges
-
     Churn Information: Churn Label, Churn Value, Churn Score, CLTV, Churn Reason
-
-This rich dataset serves as a robust foundation for churn prediction and customer behavior analysis.
-
 
 
 ## Data Preprocessing
 
-The preprocessing steps were executed in the 1_EDA_preprocessing.ipynb notebook. The major steps include:
+The preprocessing steps were executed in the 1_EDA_preprocessing.ipynb notebook.
 
     Missing Values Handling
-
-        Specifically handled Total Charges column
-
+        Specifically handled Total Charges column by dropping null values
         Rows with missing values were removed
-
+        
     Encoding Categorical Variables
-
-        Used Label Encoding to convert object (categorical) types into numerical values
-
-        Checked dtype of each column to identify categorical features
+        Used Label Encoding to transform object  types into numerical values
+        Checked dtype of each column
 
     Feature Scaling
-
         Applied StandardScaler to normalize numerical columns
 
     Feature Selection
-
-        Dropped non-informative fields (e.g., CustomerID, Lat Long)
-
+        Dropped non-informative fields
         Removed features with a single unique value
-
+        
     Exploratory Data Analysis (EDA)
-
-        Used correlation matrix to observe relationships between features
-
+        Used correlation matrix to observe relationships
         Visualized feature distributions and churn relationships through multiple plots
 
     Final Dataset
-
         The cleaned and processed dataset was saved as Processed_telco_customer.csv
-
 
 
 
@@ -96,9 +76,9 @@ Several new features were engineered throughout the process:
 
     Additional Charges: Although this feature was initially developed to capture extra billing beyond regular charges, further analysis showed it did not contribute significantly to model performance and was removed.
 
-    Zone ID: To detect regional churn trends, customers were grouped into five geographic clusters based on their Latitude and Longitude using K-Means Clustering. This created a new feature, zone_id, which captures spatial churn patterns.
+    Zone ID: To detect regional churns, customers were grouped into five geographic clusters based on their Latitude and Longitude using K-Means Clustering.
 
-    Bundled Services Count: This feature represented customer engagement by counting how many services a customer subscribed to (e.g., Internet, Phone, Streaming TV, Tech Support).
+    Bundled Services Count: This feature represented customer engagement by counting how many services a customer subscribed
 
     Synthetic Churn Score: A custom churn risk indicator was created by combining multiple service usage metrics and customer characteristics with weighted importance. This aggregated score served as a proxy for churn propensity and was designed to improve model interpretability.
 
@@ -132,32 +112,22 @@ Model Files and Storage
 All trained models were saved for reproducibility and easy access. Scikit-learn models were stored with joblib, while PyTorch models were saved using torch.save. Models such as:
 
     logreg_scaled_dropped.pkl (scaled logistic regression without Churn Score)
-
     logreg_scaled_gridsearch.pkl (scaled logistic regression with hyperparameter tuning)
-
     logreg_no_scaling.pkl (basic logistic regression without scaling)
-
     ann_basic.pth (basic ANN with Churn Score)
-
     ann_complex_dropped_churnscore.pth (advanced ANN without Churn Score)
-
-are stored in the models/ directory and can be reloaded without retraining for future evaluation or deployment.
-
 
 ## Mode Evaluation
 
 Multiple models were developed and evaluated to understand the effects of feature and model selection.
 
     The basic logistic regression achieved an accuracy of 89%, precision 0.87, recall 0.86, and F1-score 0.87. However, it struggled with predicting the minority class (churn=1), showing low recall due to data imbalance.
-
     Applying feature scaling and GridSearchCV improved results to 93% accuracy, precision 0.90, recall 0.91, and F1-score 0.91, reducing the impact of class imbalance.
-
     The basic neural network (MLP) with scaled data scored slightly lower, with 88% accuracy, precision, recall, and F1 all at 0.88. This showed that more complex models do not always guarantee better performance and that inappropriate model choice can worsen results.
 
 After removing the "Churn Score" feature (which had shown very high correlation during exploratory data analysis), performance dropped:
 
     Logistic regression accuracy fell to 80%, with precision 0.76, recall 0.65, and F1-score 0.70.
-
     The advanced ANN with dropout and batch normalization (trained without the Churn Score) achieved better results than logistic regression, with 84% accuracy, 0.80 precision, 0.72 recall, and 0.76 F1-score.
 
 This demonstrated that while the "Churn Score" was an important predictive feature, a well-regularized neural network could partially compensate for its removal.
